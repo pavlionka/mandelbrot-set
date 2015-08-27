@@ -45,7 +45,6 @@ package demo.parallel;
  * @author Alexander Kouznetsov, Tristan Yan
  */
 public class Complex {
-    
     private double re;   // the real part
     private double im;   // the imaginary part
 
@@ -72,6 +71,17 @@ public class Complex {
     }
 
     /**
+     * Subtract operation.
+     * @param b summand
+     * @return this Complex object whose value is (this + b)
+     */
+    public Complex minus(Complex b) {
+        re -= b.re;
+        im -= b.im;
+        return this;
+    }
+
+    /**
      * Multiply operation.
      * @param  b multiplier
      * @return this Complex object whose value is this * b
@@ -85,6 +95,36 @@ public class Complex {
         return this;
     }
 
+    public Complex div(Complex b) {
+        Complex a = this;
+        double bsq = b.lengthSQ();
+        double re = (a.re * b.re + a.im * b.im) / bsq;
+        double im = (a.im * b.re - a.re * b.im) / bsq;
+        this.re = re;
+        this.im = im;
+        return this;
+    }
+
+    public double arg() {
+        return Math.atan2(im, re);
+    }
+
+    public Complex pow(Complex z2) {
+        Complex z1 = this;
+        double c = z2.re, d = z2.im;
+        double z1sq = z1.lengthSQ();
+        double z1arg = z1.arg();
+        double abs = Math.pow(z1sq, c / 2.0) * Math.exp(-d * z1arg);
+        double arg = c * z1arg + 0.5 * d * Math.log(z1sq);
+        this.re = abs * Math.cos(arg);
+        this.im = abs * Math.sin(arg);
+        return this;
+    }
+
+    public Complex copy() {
+        return new Complex(re, im);
+    }
+
     /**
      * Square of Complex object's length, we're using square of length to 
      * eliminate the computation of square root
@@ -92,5 +132,36 @@ public class Complex {
     */
     public double lengthSQ() {
         return re * re + im * im;
+    }
+
+    public boolean fuzzyEqual(Complex b, double e) {
+        double maxSq = Math.max(lengthSQ(), b.lengthSQ());
+        double diffSq = copy().minus(b).lengthSQ();
+        return diffSq < maxSq * e * e;
+    }
+
+    public static Complex real(double x) {
+        return new Complex(x, 0);
+    }
+
+    public static Complex imag(double im) {
+        return new Complex(0, im);
+    }
+
+    public static Complex i() {
+        return imag(1);
+    }
+
+    public static Complex e() {
+        return real(Math.E);
+    }
+
+    public static Complex pi() {
+        return real(Math.PI);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + re + "," + im + ")";
     }
 }
