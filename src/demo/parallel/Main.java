@@ -684,7 +684,7 @@ public class Main extends Application {
         new Thread(task, "Task to render MandelbrotSet").start();
         stageTitle.set("Mandelbrot Set Demo (RENDERING...)");
         task.setOnSucceeded(t -> {
-            stageTitle.set("Mandelbrot Set Demo");
+            stageTitle.set("Mandelbrot Set Demo Main Window");
             progress.set(1);
 
             if (onDone != null) {
